@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        {% include "snippets/head.html" %}
+    </head>
+  
+    <body id="page-top">
+
+       
+         <!-- Navigation-->
+ <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+
+    <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-tags" viewBox="0 0 16 16">
+                <path d="M3 2v4.586l7 7L14.586 9l-7-7H3zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2z"/>
+                <path d="M5.5 5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1v5.086z"/>
+              </svg>
+            Amazon Price Tracker ₹
+        </a>
+        
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link">Hey there @{{ user.username }}</a></li>
+                    <li class="nav-item"><a href="{% url 'account_logout' %}" class="nav-link">Logout</a></li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link js-scroll-trigger" href="{% url 'account_login' %}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link js-scroll-trigger" href="{% url 'account_signup' %}">Signup</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<header class="masthead" style="background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 75%, #000000 100%), url('{% static 'img/bg-masthead.jpg' %}')">
+    <div class="container d-flex h-100 align-items-center">
+        <div class="mx-auto text-center">
+            <h1 class="mx-auto my-0 text-uppercase">{% block heading %}Price Tracker{% endblock heading %}</h1>
+            <h2 class="text-white-50 mx-auto mt-2 mb-5">{% block caption %}Track prices of products you want to buy!{% endblock caption %}</h2>
+            <a class="btn btn-primary" onclick="scrollWin()">{% block button %}Get started{% endblock button %}</a>
+        </div>
+    </div>
+</header>
+
+        {% block content %}
+          
+        {% endblock content %}
+
+        {% include "snippets/footer.html" %}
+    </body>
+</html>

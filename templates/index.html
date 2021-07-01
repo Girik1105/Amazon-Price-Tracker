@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bootstrap4 %}
+
+
+{% block heading %}
+  Your Products 
+{% endblock heading %}
+
+{% block caption %}
+  
+{% endblock caption %}
+
+{% block button %}
+  See all products
+{% endblock button %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="float-left mt-5">
+            <p>Items you are Tracking: <strong>{{ all_items_count }}</strong> <br> Discounted Items: <strong>{{ discount_count }}</strong></p>
+        </div>
+        <div class="float-right mt-5">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
+                Track a new item
+            </button>
+            
+            <a href="{% url 'update' %}"  class="btn btn-info">Update</a>
+
+        </div>
+    </div>
+
+    
+
+    <!-- Modal -->
+  <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Track a New Item</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <input type="submit" class="btn btn-primary" value="Start Tracking">
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+      <!-- Projects-->
+      <section class="projects-section bg-light" id="projects">
+
+    
+        <div class="container">
+            <h1 class="mb-5">Discounted Items: ({{ discount_count }})</h1>
+            <div class="row row-cols-1 row-cols-md-2">
+                {% for item in discounted_items %}
+                <div class="card mb-3 m-2" style="max-width: 540px;">
+                    <div class="row no-gutters">
+                      <div class="col-md-4">
+                        <img src="{{ item.product_image_url }}" height="160" width="150" alt="...">
+                        <p class="card-text"><small class="text-muted">Added on: {{ item.created }} <br> Updated Price on: {{ item.updated }}</small></p>
+                      </div>
+                      <div class="col-md-8">
+                        <div class="card-body">
+                          <h5 class="card-title"><span style="font-size:15px;">{{ item.name }}</span></h5>
+                          <ul class="card-text">
+                            <li>MRP ₹{{ item.mrp }}</li>
+                            <li>Current Price <span class="differ">₹{{ item.current_price }}</span> <br> Price you filled <span class="differless">₹{{ item.old_price }}</span></li>
+                            <!-- <li>Amazon save: {{ item.saving }}</li> -->
+                            
+                            <li>Discount since you added:
+                                 {% if item.price_difference > 0 %}
+                                   <span class="discount">₹{{ item.price_difference }}</span>
+                                {% else %}
+                                ₹{{ item.price_difference }}
+                                 {% endif %}
+                            </li>
+                            
+                            {% if item.price_difference != None or price_difference > 0 %}
+                             
+                            {% endif %}
+                          </ul>
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% empty %}
+                <div class="container">
+                    <h3>No items are discounted yet! </h3>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        
+        <div class="container">
+            <h1 class="mt-5 mb-5">All Items: ({{ all_items_count }})</h1>
+            <div class="row row-cols-1 row-cols-md-3">
+                {% for item in prices %}
+                    <div class="col mb-4">
+                        <div class="card" style="width: 18rem;">
+                            <img src="{{ item.product_image_url }}" height="185" width="100" class="card-img-top" alt="...">
+                            <div class="card-body">
+                              <h5 class="card-title"><span style="font-size:10px;">{{ item.name }}</span></h5>
+                              <p class="card-text">MRP: ₹{{ item.mrp }}</p>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                              <li class="list-group-item">Current Price: ₹{{ item.current_price }}</li>
+                              <li class="list-group-item">Discount (since you added):
+                                {% if item.price_difference > 0 %}
+                                <span class="discount">₹{{ item.price_difference }}</span>
+                             {% else %}
+                             ₹{{ item.price_difference }}
+                              {% endif %}
+                              </li>
+                            </ul>
+                            <div class="card-body">
+                              <a href="{{ item.url }}" target="" class="card-link">Visit Amazon</a>
+                              <a class="card-link" data-toggle="modal" data-target="#exampleModal{{ item.pk }}">More Details</a>
+                            </div>
+                          </div>
+                    </div>                
+                    
+                    <!-- Modal -->
+                    <div class="modal fade col-mb-6 ml-5" id="exampleModal{{ item.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{ item.name }}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                            <p class="card-text"><small class="text-muted">Added on: {{ item.created }} <br> Updated Price on: {{ item.updated }}</small></p>
+                            <ul class="card-text">
+                                <li>MRP ₹{{ item.mrp }}</li>
+                                <li>Current Price ₹{{ item.current_price }}</li>
+                               
+                                {% if item.old_price > 0.0 %}
+                                <li>Price you filled: ₹{{ item.old_price }}</li>  
+                                {% endif %}
+                              
+                                <li>Amazon offer: {{ item.saving }}</li>
+                                <li>Discount since you added:
+                                    {% if item.price_difference > 0 %}
+                                    <span class="discount">₹{{ item.price_difference }}</span>
+                                 {% else %}
+                                 ₹{{ item.price_difference }}
+                                  {% endif %}
+                                </li>
+                            </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="{% url 'delete' item.pk %}" type="button" class="btn btn-danger">Delete</a>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="container">
+                        <h3>Add a new item to track them!</h3>
+                    </div>
+                {% endfor %}
+            </div>
+    
+        </div>
+
+        </section>
+
+<!-- <i class="far fa-paper-plane fa-2x mb-2 text-white"></i> -->
+
+{% endblock content %}
